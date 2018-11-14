@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Сервис интеграции</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--Мы живем за великой стеной-->
+    <link rel="stylesheet" href="asserts/bootstrap/css/bootstrap.min.css">
+    <script src="asserts/jquery-3.3.1.min.js"></script>
+    <script src="asserts/bootstrap/js/bootstrap.min.js"></script>
+    <script src="asserts/angular.min.js"></script>
+
+    <script type="text/javascript">
+        var app = angular.module("DMZ_App", []);
+        app.controller("DMZController", function ($scope, $http) {
+
+            $scope.getRequest = function () {
+                $http({
+                    method: 'GET',
+                    url: '/dmz-api/getDataFromDmz',
+                }).then(function successCallback(response) {
+                    $scope.correlationId = response.data.correlationId;
+                    $scope.requestTextMessage = response.data.textMessage;
+                }, function errorCallback(response) {
+                    console.log('Error');
+                });
+            };
+
+            $scope.getResponse = function (corId) {
+                $http({
+                    method: 'GET',
+                    url: '/dmz-api/resultId/'+corId,
+                }).then(function successCallback(response) {
+                    $scope.correlationId = response.data.correlationId;
+                    $scope.responseTextMessage = response.data.messageText;
+                }, function errorCallback(response) {
+                    console.log('Error');
+                });
+            };
+
+        });
+    </script>
+</head>
+
+<body ng-app="DMZ_App" ng-controller="DMZController">
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Сервис интеграции через DMZ</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Описание<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">API</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Тесты</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div class="container-fluid">
+    <form class="form-inline">
+        <input class="form-control mr-sm-2" type="search" placeholder="Введите сообщение" aria-label="запрос">
+        <button ng-click="getRequest()"
+                class="btn btn-outline-success my-2 my-sm-0"
+                >Отправить
+        </button>
+    </form>
+
+        <input class="form-control mr-sm-2"
+            type="search"
+            placeholder="CorrelationId"
+            aria-label="Id"
+            ng-value=correlationId>
+
+    <button ng-click="getResponse(correlationId)"
+        ng-if="correlationId"
+        class="btn btn-outline-success my-2 my-sm-0">Получить ответ</button>
+    <output class="form-control mr-sm-2"
+            ng-value=responseTextMessage
+            placeholder="Ожидаемый ответ">
+    </output>
+</div>
+
+</body>
+</html>

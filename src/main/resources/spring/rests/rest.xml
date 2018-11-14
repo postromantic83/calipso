@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rests xmlns="http://camel.apache.org/schema/spring">
+    <rest id="rest-c837a9e7-0e86-40e8-8b51-e84d8143fc96">
+        <get id="hello_from" uri="/getDataFromDmz">
+            <to uri="direct:getDataFromDmz"/>
+        </get>
+        <get id="result_from" uri="/result">
+            <to uri="direct:result"/>
+        </get>
+        <get id="res_with_params" uri="/resultId/{corid}">
+            <to uri="direct:resultId"></to>
+        </get>
+    </rest>
+</rests>
