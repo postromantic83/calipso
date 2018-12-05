@@ -1,9 +1,9 @@
-package ru.gazpromneft_at.kspd;
+package ru.gazpromneft_at;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.gazpromneft_at.kspd.model.Messaga;
+import ru.gazpromneft_at.model.Messaga;
 
 @RestController
 @RequestMapping("/health")

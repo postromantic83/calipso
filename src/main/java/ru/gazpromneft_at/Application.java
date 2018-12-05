@@ -1,4 +1,4 @@
-package ru.gazpromneft_at.kspd;
+package ru.gazpromneft_at;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package ru.gazpromneft_at.kspd.components;
+package ru.gazpromneft_at.components;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -8,7 +8,7 @@ import org.apache.qpid.jms.JmsQueue;
 import org.apache.qpid.jms.message.JmsMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.gazpromneft_at.kspd.model.Messaga;
+import ru.gazpromneft_at.model.Messaga;
 
 import javax.jms.Connection;
 import javax.jms.Destination;

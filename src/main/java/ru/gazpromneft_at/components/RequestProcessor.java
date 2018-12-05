@@ -1,8 +1,8 @@
-package ru.gazpromneft_at.kspd.components;
+package ru.gazpromneft_at.components;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import ru.gazpromneft_at.kspd.model.Messaga;
+import ru.gazpromneft_at.model.Messaga;
 
 import java.util.UUID;
 

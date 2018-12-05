@@ -10,20 +10,29 @@
         <property name="username" value="${activemq.user}"/>
         <property name="password" value="${activemq.password}"/>
     </bean>
-    <bean class="org.apache.camel.component.amqp.AMQPComponent" id="activemq">
+
+
+    <bean class="org.apache.activemq.jms.pool.PooledConnectionFactory" id="pooledConnectionFactory">
         <property name="connectionFactory" ref="amqpDmzConnectionFactory"/>
     </bean>
-    <bean class="ru.gazpromneft_at.kspd.components.RequestHandlerBean" id="corIdGenerator"/>
-    <bean class="ru.gazpromneft_at.kspd.components.RequestProcessor" id="requestProcessor"/>
-    <bean class="ru.gazpromneft_at.kspd.components.MessageReceiver" id="messageReceiver"/>
-    <bean class="ru.gazpromneft_at.kspd.components.MessageIdReceiver" id="messageIdReceiver"/>
-    <bean class="ru.gazpromneft_at.kspd.components.KspdLogicProcessor" id="kspdProcessor"/>
+    <bean class="org.apache.camel.component.amqp.AMQPComponent" id="activemq">
+        <property name="connectionFactory" ref="pooledConnectionFactory"/>
+    </bean>
+
+
+    <bean class="ru.gazpromneft_at.components.RequestHandlerBean" id="corIdGenerator"/>
+    <bean class="ru.gazpromneft_at.components.RequestProcessor" id="requestProcessor"/>
+    <bean class="ru.gazpromneft_at.components.MessageReceiver" id="messageReceiver"/>
+    <bean class="ru.gazpromneft_at.components.MessageIdReceiver" id="messageIdReceiver"/>
+    <bean class="ru.gazpromneft_at.components.KspdLogicProcessor" id="kspdProcessor"/>
+    <bean class="ru.gazpromneft_at.components.DmzContainerProcessor" id="dmzContainerProcessor"/>
+    <bean class="ru.gazpromneft_at.components.DmzContainer" id="dmzContainer"/>
     <camelContext id="camel_context_crm_dmz" xmlns="http://camel.apache.org/schema/spring">
         <dataFormats>
             <!-- Here we define a Json data format with the id jack and that it should use the
              TestPojo as the class type when doing unmarshal. The unmarshalTypeName is optional,
               if not provided Camel will use a Map as the type. -->
-            <json id="jack" library="Jackson" unmarshalTypeName="ru.gazpromneft_at.kspd.model.Messaga"/>
+            <json id="jack" library="Jackson" unmarshalTypeName="ru.gazpromneft_at.model.Messaga"/>
         </dataFormats>
         <restConfiguration apiContextPath="/api-doc" component="servlet"
             contextPath="/dmz" enableCORS="true" host="localhost"
@@ -59,15 +68,31 @@
         <!-- ***   THIS IS FOR KSPD PROCESSOR  *** -->
         <route id="kspd-request">
             <from id="from_dmz" uri="activemq:queue:que_in"/>
+
             <setExchangePattern id="_setExchangePattern2" pattern="InOnly"/>
             <log id="from_que1" message="FROM QUE"/>
             <process id="_process2" ref="kspdProcessor"/>
-            <setHeader headerName="HELLO" id="_setHeader1">
-                <constant>WORLD</constant>
-            </setHeader>
+            <!--<setHeader headerName="HELLO" id="_setHeader1">-->
+                <!--<constant>WORLD</constant>-->
+            <!--</setHeader>-->
+            <convertBodyTo type="ru.gazpromneft_at.model.Messaga"></convertBodyTo>
+            <!--<convertBodyTo type="java.lang.String"></convertBodyTo>-->
+            <!--<setBody>-->
+                <!--<constant>HELLO KSPD</constant>-->
+            <!--</setBody>-->
             <log id="_log1" message="MOVE FROM IN TO OUT"/>
             <to id="_to2" uri="activemq:queue:que_out"/>
         </route>
+
+        <!--<route id="dmzCashing">-->
+            <!--<from id="from_que_out" uri="activemq:queue:que_out?useMessageIDAsCorrelationID=false?acknowledgementModeName=AUTO_ACKNOWLEDGE"/>-->
+            <!--&lt;!&ndash;<convertBodyTo type="java.lang.String"></convertBodyTo>&ndash;&gt;-->
+            <!--&lt;!&ndash;<convertBodyTo type="ru.gazpromneft_at.model.Messaga"></convertBodyTo>&ndash;&gt;-->
+            <!--&lt;!&ndash;<unmarshal ref="jack"></unmarshal>&ndash;&gt;-->
+            <!--<process id="_procContainer" ref="dmzContainerProcessor"/>-->
+            <!--<log id="suck" message="СУКЕСФУЛ!"></log>-->
+        <!--</route>-->
+
 
         <!--   OUT   RESULT  BY ID  -->
         <route id="resultId">

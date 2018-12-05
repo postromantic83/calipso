@@ -1,4 +1,4 @@
-package ru.gazpromneft_at.kspd.model;
+package ru.gazpromneft_at.model;
 
 import java.io.Serializable;
 
